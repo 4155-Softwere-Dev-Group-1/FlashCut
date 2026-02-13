@@ -1,0 +1,13 @@
+{
+  "name": "flashcut",
+  "version": "1.0.0",
+  "description": "AI-powered flashcard creation from web content",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix extension\" \"npm run dev --prefix server\"",
+    "build": "npm run build --prefix extension && npm run build --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^7.0.0"
+  }
+}

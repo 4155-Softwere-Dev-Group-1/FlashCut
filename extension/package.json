@@ -1,0 +1,10 @@
+{
+  "name": "flashcut-extension",
+  "version": "1.0.0",
+  "description": "Chrome extension for FlashCut",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Development mode'",
+    "build": "echo 'Build extension'"
+  }
+}

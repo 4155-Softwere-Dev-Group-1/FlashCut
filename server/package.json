@@ -1,0 +1,20 @@
+{
+  "name": "flashcut-server",
+  "version": "1.0.0",
+  "description": "Backend server for FlashCut",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node src/server.js",
+    "build": "echo 'Build server'",
+    "test": "echo 'Run tests'"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "dotenv": "^16.0.3",
+    "pg": "^8.9.0",
+    "openai": "^3.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
