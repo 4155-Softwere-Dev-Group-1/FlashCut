@@ -1,14 +1,28 @@
-### server/migrations/init.sql
+# FlashCut Codebase Tour for a Newcomer
 
-PostgreSQL schema for:
-- Users
-- Flashcards
-- Decks
-- Deck ↔ Flashcard join table
+Here’s the quickest mental model: this is a monorepo with two apps — a Chrome extension frontend and a Node/Express backend API — plus SQL schema setup. The current implementation is mostly scaffolded, with core flow outlined but several TODOs still open.
 
-### Battle_Plan.md
+---
 
-Long-form project roadmap/playbook; useful for onboarding intent and milestone planning.
+## 1) General Structure
+
+### Root
+
+Orchestrates both subprojects via npm scripts (`dev` runs extension + server together with `concurrently`).
+
+### extension/
+
+Chrome extension (Manifest V3) with:
+- Popup UI  
+- Content script  
+- Service worker  
+- API client  
+- Storage helpers  
+
+### server/
+
+Express app with a layered backend structure:
+
 
 ---
 
