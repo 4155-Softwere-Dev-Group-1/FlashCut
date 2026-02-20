@@ -21,6 +21,19 @@ Chrome extension (Manifest V3) with:
 
 ### server/
 
+
+### server/migrations/init.sql
+
+PostgreSQL schema for:
+- users  
+- flashcards  
+- decks  
+- deck ↔ flashcard join table  
+
+### Battle_Plan.md
+
+Long-form project roadmap/playbook; useful for onboarding intent and milestone planning.
+
 Express app with a layered backend structure:
 
 
