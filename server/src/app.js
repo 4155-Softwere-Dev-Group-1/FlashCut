@@ -9,6 +9,15 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Health check
+app.get('/health', (req, res) => {
+	res.json({ status: 'Server is running!' });
+});
+
+// Root route
+app.get('/', (req, res) => {
+  res.json({ status: 'FlashCut API', routes: ['/health', '/api/flashcards'] });
+});
 // Routes
 app.use('/api/flashcards', flashcardRoutes);
 
