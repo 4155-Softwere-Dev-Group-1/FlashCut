@@ -1,21 +1,32 @@
 {
   "manifest_version": 3,
-  "name": "FlashCut",
-  "version": "1.0",
-  "description": "Create flashcards from selected web content with AI",
-  "permissions": ["scripting", "storage", "activeTab"],
-  "host_permissions": ["<all_urls>"],
+  "name": "ContextCard",
+  "version": "0.1.0",
+  "description": "AI-powered vocabulary flashcards from real reading",
+
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+
   "action": {
-    "default_popup": "src/popup/popup.html",
-    "default_title": "FlashCut"
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
   },
-  "background": {
-    "service_worker": "src/background/serviceWorker.js"
-  },
+
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["src/content/contentScript.js"]
+      "js": ["content/content.js"],
+      "run_at": "document_end"
     }
-  ]
+  ],
+
+  "background": {
+    "service_worker": "background/background.js"
+  }
 }
