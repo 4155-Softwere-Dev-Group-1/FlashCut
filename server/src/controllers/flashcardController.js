@@ -1,11 +1,10 @@
-// Flashcard controller
-
-const flashcardService = require('../services/flashcardService');
 
 async function createFlashcard(req, res, next) {
   try {
-    const { content } = req.body;
-    const flashcard = await flashcardService.generateFlashcard(content);
+    const { term, sentence, sourceUrl } = req.body;
+    console.log(`[POST /api/flashcards] user: ${req.userId} | term: "${term}"`);
+    const flashcard = await flashcardService.generateFlashcard(term, sentence, sourceUrl, req.userId);
+    console.log(`[POST /api/flashcards] saved flashcard id: ${flashcard.id}`);
     res.json(flashcard);
   } catch (error) {
     next(error);
@@ -14,7 +13,9 @@ async function createFlashcard(req, res, next) {
 
 async function getFlashcards(req, res, next) {
   try {
-    const flashcards = await flashcardService.getAllFlashcards();
+    console.log(`[GET /api/flashcards] user: ${req.userId}`);
+    const flashcards = await flashcardService.getAllFlashcards(req.userId);
+    console.log(`[GET /api/flashcards] returned ${flashcards.length} cards`);
     res.json(flashcards);
   } catch (error) {
     next(error);

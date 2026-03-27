@@ -2,6 +2,7 @@
 
 const express = require('express');
 const flashcardRoutes = require('./routes/flashcardRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
   res.json({ status: 'FlashCut API', routes: ['/health', '/api/flashcards'] });
 });
 // Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/flashcards', flashcardRoutes);
 
 // Error handling middleware
