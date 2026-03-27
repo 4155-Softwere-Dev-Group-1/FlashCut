@@ -46,22 +46,64 @@ Write this in your README.md:
 
 **5. Create initial project structure in GitHub**
 ```bash
-vocabulary-learning-app/
+FlashCut/
 ├── README.md
+├── Battle_Plan.md
+├── package.json
+├── .env.example
+├── .gitignore
 ├── extension/          # Chrome extension code
 │   ├── manifest.json
-│   ├── popup/
-│   ├── content/
-│   └── background/
-├── backend/            # API server
-│   ├── src/
 │   ├── package.json
-│   └── .env.example
-├── docs/               # Documentation
-│   ├── API.md
-│   ├── SETUP.md
-│   └── ARCHITECTURE.md
-└── .gitignore
+│   ├── background/
+│   │   └── background.js
+│   ├── content/
+│   │   └── content.js
+│   ├── icons/
+│   ├── popup/
+│   │   ├── popup.html
+│   │   ├── popup.css
+│   │   └── popup.js
+│   └── src/            # Modular source files
+│       ├── api/
+│       │   └── flashcardApi.js
+│       ├── background/
+│       │   └── serviceWorker.js
+│       ├── content/
+│       │   ├── contentScript.js
+│       │   └── selectionHandler.js
+│       ├── popup/
+│       │   ├── popup.html
+│       │   ├── popup.css
+│       │   └── popup.js
+│       └── utils/
+│           └── storage.js
+└── server/             # API server (Node/Express)
+    ├── package.json
+    ├── migrations/
+    │   └── init.sql
+    └── src/
+        ├── app.js
+        ├── server.js
+        ├── ai/
+        │   └── claude-test.js
+        ├── config/
+        │   ├── db.js
+        │   └── openai.js
+        ├── controllers/
+        │   └── flashcardController.js
+        ├── middleware/
+        │   ├── errorHandler.js
+        │   └── validateRequest.js
+        ├── models/
+        │   └── flashcardModel.js
+        ├── routes/
+        │   └── flashcardRoutes.js
+        ├── services/
+        │   ├── aiService.js
+        │   └── flashcardService.js
+        └── utils/
+            └── formatter.js
 ```
 
 **6. Write initial README**
@@ -97,8 +139,8 @@ Workflow:
 ```bash
 # 1. Create backend directory structure
 cd vocabulary-learning-app
-mkdir backend
-cd backend
+mkdir server
+cd server
 
 # 2. Initialize Node.js project
 npm init -y
@@ -113,7 +155,7 @@ npm install pg
 # 5. Create basic server structure
 ```
 
-**Create `backend/src/server.js`:**
+**Create `server/src/server.js`:**
 ```javascript
 const express = require('express');
 const cors = require('cors');
@@ -137,7 +179,7 @@ app.listen(PORT, () => {
 });
 ```
 
-**Create `backend/package.json` scripts:**
+**Create `server/package.json` scripts:**
 ```json
 {
   "scripts": {
@@ -156,9 +198,16 @@ npm run dev
 
 **Create `.env.example`:**
 ```
-PORT=3000
-DATABASE_URL=postgresql://localhost/vocab_app
-OPENAI_API_KEY=your_key_here
+SERVER_PORT=5000
+NODE_ENV=development
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=flashcut_db
+DB_USER=postgres
+DB_PASSWORD=password
+OPENAI_API_KEY=your_api_key_here
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+EXTENSION_ID=your_extension_id_here
 ```
 
 ✅ **Deliverable:** Working Express server with one test endpoint
@@ -171,7 +220,7 @@ OPENAI_API_KEY=your_key_here
 
 ```bash
 # 1. Create extension directory
-cd vocabulary-learning-app
+cd FlashCut
 mkdir -p extension/popup extension/content extension/background extension/icons
 ```
 
@@ -353,7 +402,7 @@ CREATE DATABASE vocab_app;
 \q
 ```
 
-**Create `backend/src/db/schema.sql`:**
+**Create `server/migrations/init.sql`:**
 ```sql
 -- Users table (optional for MVP, but good to have structure)
 CREATE TABLE IF NOT EXISTS users (
@@ -390,10 +439,10 @@ CREATE INDEX idx_captures_user_id ON captures(user_id);
 
 **Run the schema:**
 ```bash
-psql vocab_app < src/db/schema.sql
+psql vocab_app < server/migrations/init.sql
 ```
 
-**Create `backend/src/db/db.js`:**
+**Create `server/src/config/db.js`:**
 ```javascript
 const { Pool } = require('pg');
 
@@ -445,7 +494,7 @@ npm install openai
 # 3. Create test script
 ```
 
-**Create `backend/src/ai/openai-test.js`:**
+**Create `server/src/ai/openai-test.js`:**
 ```javascript
 const OpenAI = require('openai');
 require('dotenv').config();
@@ -491,7 +540,8 @@ testDefinitionGeneration();
 
 **Run the test:**
 ```bash
-node src/ai/openai-test.js
+# Run from the project root:
+node server/src/ai/openai-test.js
 ```
 
 **Expected output:**
@@ -513,7 +563,7 @@ Estimated cost: $0.000019
 npm install @anthropic-ai/sdk
 ```
 
-**Create `backend/src/ai/claude-test.js`:**
+**Create `server/src/ai/claude-test.js`:**
 ```javascript
 const Anthropic = require('@anthropic-ai/sdk');
 require('dotenv').config();
@@ -528,7 +578,7 @@ async function testDefinitionGeneration() {
   
   try {
     const response = await anthropic.messages.create({
-      model: "claude-3-5-haiku-20241022",
+      model: "claude-haiku-4-5-20251001",
       max_tokens: 150,
       messages: [{
         role: "user",
@@ -561,11 +611,11 @@ testDefinitionGeneration();
 
 **Backend: Create capture endpoint**
 
-**Edit `backend/src/server.js`:**
+**Edit `server/src/server.js`:**
 ```javascript
 const express = require('express');
 const cors = require('cors');
-const db = require('./db/db');
+const db = require('./config/db');
 require('dotenv').config();
 
 const app = express();
@@ -604,7 +654,7 @@ app.listen(PORT, () => {
 
 **Frontend: Update content script to send to API**
 
-**Edit `extension/content/content.js`:**
+**Edit `extension/content/content.js` (or `extension/src/content/contentScript.js` for modular version):**
 ```javascript
 document.addEventListener('mouseup', async () => {
   const selectedText = window.getSelection().toString().trim();
@@ -685,7 +735,7 @@ function showConfirmation(term) {
 **Test the integration:**
 ```bash
 # Terminal 1: Start backend
-cd backend
+cd server
 npm run dev
 
 # Browser:
@@ -705,7 +755,7 @@ npm run dev
 
 **Backend: Add database storage**
 
-**Edit `backend/src/server.js` capture endpoint:**
+**Edit `server/src/server.js` capture endpoint:**
 ```javascript
 app.post('/api/captures', async (req, res) => {
   const { term, sentence, sourceUrl } = req.body;
@@ -796,12 +846,12 @@ At the end of Week 1, you should have:
 - Integrate AI definition generation
 - Handle errors and fallbacks
 
-**Create `backend/src/routes/flashcards.js`:**
+**Create `server/src/routes/flashcardRoutes.js`:**
 ```javascript
 const express = require('express');
 const router = express.Router();
-const db = require('../db/db');
-const { generateDefinition } = require('../ai/generate-definition');
+const db = require('../config/db');
+const { generateDefinition } = require('../services/aiService');
 
 router.post('/', async (req, res) => {
   const { captureId } = req.body;
@@ -824,7 +874,7 @@ router.post('/', async (req, res) => {
     
     // Save flashcard
     const result = await db.query(
-      'INSERT INTO flashcards (capture_id, term, definition, sentence_context) VALUES ($1, $2, $3, $4) RETURNING *',
+        'INSERT INTO flashcards (capture_id, term, definition, sentence_context) VALUES ($1, $2, $3, $4) RETURNING *',
       [captureId, term, definition, sentence]
     );
     
