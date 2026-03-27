@@ -1,8 +1,8 @@
 const pool = require('../config/db');
 const aiService = require('./aiService');
 
-async function generateFlashcard(content) {
-  const flashcard = await aiService.generateFlashcard(content);
+async function generateFlashcard(term, sentence, sourceUrl) {
+  const flashcard = await aiService.generateFlashcard(term, sentence);
 
   const result = await pool.query(
     `INSERT INTO flashcards (user_id, question, answer)
