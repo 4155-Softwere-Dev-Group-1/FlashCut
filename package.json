@@ -9,5 +9,9 @@
   },
   "devDependencies": {
     "concurrently": "^7.0.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
+    "cors": "^2.8.6"
   }
 }
