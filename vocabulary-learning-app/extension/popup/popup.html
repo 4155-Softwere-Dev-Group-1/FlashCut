@@ -2,21 +2,416 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>ContextCard</title>
-  <link rel="stylesheet" href="popup.css">
+  <title>FlashCut</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 380px;
+      min-height: 480px;
+      background: #0f1117;
+      color: #e2e8f0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 14px;
+    }
+
+    .container { display: flex; flex-direction: column; height: 100%; }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid #1e2330;
+    }
+    .logo { display: flex; align-items: center; gap: 8px; }
+    .logo-icon {
+      width: 28px; height: 28px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: #fff; letter-spacing: -0.5px;
+    }
+    .logo-text { font-size: 15px; font-weight: 600; color: #f1f5f9; }
+    .logo-sub { font-size: 11px; color: #64748b; margin-top: 1px; }
+
+    .header-right { display: flex; align-items: center; gap: 8px; }
+
+    .options-btn {
+      background: #1e2330; border: 1px solid #2a3147;
+      color: #94a3b8; border-radius: 7px;
+      padding: 5px 10px; font-size: 12px; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      text-decoration: none; display: inline-block;
+    }
+    .options-btn:hover { background: #252d40; color: #e2e8f0; }
+
+    .user-chip {
+      display: flex; align-items: center; gap: 6px;
+      background: #1a2035; border: 1px solid #2a3147;
+      border-radius: 20px; padding: 4px 10px 4px 6px;
+    }
+    .avatar {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: #6366f1; color: #fff;
+      font-size: 10px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .user-name { font-size: 12px; color: #94a3b8; }
+    .logout-btn {
+      background: none; border: none; color: #4b5563;
+      font-size: 11px; cursor: pointer; padding: 2px 4px;
+      border-radius: 4px; transition: color 0.15s;
+    }
+    .logout-btn:hover { color: #ef4444; }
+
+    /* ── Auth Section ── */
+    #auth-section {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 24px 20px; gap: 0;
+    }
+
+    .auth-logo {
+      width: 48px; height: 48px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 700; color: #fff;
+      margin-bottom: 16px;
+    }
+    .auth-title { font-size: 18px; font-weight: 600; color: #f1f5f9; margin-bottom: 4px; }
+    .auth-sub { font-size: 13px; color: #64748b; margin-bottom: 24px; text-align: center; }
+
+    .tab-row {
+      display: flex; width: 100%;
+      background: #1a2035; border-radius: 8px; padding: 3px;
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      flex: 1; padding: 7px; border: none; background: none;
+      font-size: 13px; font-weight: 500; color: #64748b;
+      border-radius: 6px; cursor: pointer; transition: all 0.15s;
+    }
+    .tab-btn.active { background: #252d40; color: #e2e8f0; }
+
+    .form-group { width: 100%; margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 12px; color: #64748b; margin-bottom: 5px; }
+    .form-group input {
+      width: 100%; padding: 9px 12px;
+      background: #1a2035; border: 1px solid #2a3147;
+      border-radius: 8px; color: #e2e8f0; font-size: 13px;
+      outline: none; transition: border-color 0.15s;
+    }
+    .form-group input:focus { border-color: #6366f1; }
+    .form-group input::placeholder { color: #374151; }
+
+    #register-username-group { display: none; }
+
+    .submit-btn {
+      width: 100%; padding: 10px;
+      background: #6366f1; border: none; border-radius: 8px;
+      color: #fff; font-size: 14px; font-weight: 500;
+      cursor: pointer; margin-top: 4px; transition: background 0.15s;
+    }
+    .submit-btn:hover { background: #5254cc; }
+    .submit-btn:disabled { background: #3730a3; opacity: 0.5; cursor: not-allowed; }
+
+    .auth-error {
+      width: 100%; padding: 8px 12px; margin-top: 10px;
+      background: #2d1b1b; border: 1px solid #7f1d1d;
+      border-radius: 7px; color: #fca5a5; font-size: 12px;
+      display: none;
+    }
+
+    /* ── Main Section ── */
+    #main-section { display: none; flex-direction: column; flex: 1; }
+
+    .stats-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px 8px;
+    }
+    .stats-count { font-size: 12px; color: #64748b; }
+    .stats-count span { color: #a5b4fc; font-weight: 500; }
+
+    /* ── Loading ── */
+    .loading {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; flex: 1; gap: 12px; padding: 40px;
+    }
+    .spinner {
+      width: 28px; height: 28px; border: 2px solid #1e2330;
+      border-top-color: #6366f1; border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading p { font-size: 13px; color: #64748b; }
+
+    /* ── Flashcard List ── */
+    #flashcard-list { flex: 1; overflow-y: auto; padding: 0 12px 12px; }
+    #flashcard-list::-webkit-scrollbar { width: 4px; }
+    #flashcard-list::-webkit-scrollbar-thumb { background: #2a3147; border-radius: 2px; }
+
+    .flashcard {
+      background: #141824; border: 1px solid #1e2330;
+      border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;
+      transition: border-color 0.15s;
+    }
+    .flashcard:hover { border-color: #2a3147; }
+
+    .fc-q { font-size: 12px; color: #64748b; margin-bottom: 4px; }
+    .fc-term {
+      font-size: 15px; font-weight: 500; color: #e2e8f0;
+      margin-bottom: 6px;
+    }
+    .fc-answer { font-size: 13px; color: #94a3b8; line-height: 1.5; }
+    .fc-meta { font-size: 11px; color: #374151; margin-top: 8px; }
+
+    /* ── Empty ── */
+    .empty {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; flex: 1; padding: 40px 24px; gap: 10px;
+    }
+    .empty-icon { font-size: 32px; opacity: 0.3; }
+    .empty p { font-size: 13px; color: #64748b; text-align: center; line-height: 1.6; }
+
+    /* ── Error ── */
+    .server-error {
+      margin: 12px 12px 0;
+      padding: 10px 12px; background: #1c1212; border: 1px solid #7f1d1d;
+      border-radius: 8px; font-size: 12px; color: #fca5a5;
+      display: none;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      padding: 10px 12px; border-top: 1px solid #1e2330;
+      display: flex; gap: 8px;
+    }
+    .footer-btn {
+      flex: 1; padding: 8px; border-radius: 7px; font-size: 12px;
+      font-weight: 500; cursor: pointer; border: 1px solid #2a3147;
+      transition: all 0.15s;
+    }
+    .btn-secondary {
+      background: #1a2035; color: #94a3b8;
+    }
+    .btn-secondary:hover { background: #252d40; color: #e2e8f0; }
+    .btn-danger {
+      background: #1c1212; color: #f87171; border-color: #7f1d1d;
+    }
+    .btn-danger:hover { background: #2a1515; }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>ContextCard</h1>
-      <p class="subtitle">Vocabulary from your reading</p>
-    </header>
+<div class="container">
 
-    <div id="flashcard-list" class="flashcard-list"></div>
-
-    <button id="clear-btn" class="clear-btn">Clear All</button>
+  <!-- Header (always visible) -->
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">FC</div>
+      <div>
+        <div class="logo-text">FlashCut</div>
+        <div class="logo-sub">Vocabulary builder</div>
+      </div>
+    </div>
+    <div class="header-right" id="header-right">
+      <!-- Populated by JS -->
+    </div>
   </div>
 
-  <script src="popup.js"></script>
+  <!-- Auth Section -->
+  <div id="auth-section">
+    <div class="auth-logo">FC</div>
+    <div class="auth-title">Welcome back</div>
+    <div class="auth-sub">Sign in to access your flashcards across all devices</div>
+
+    <div class="tab-row">
+      <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Sign in</button>
+      <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Create account</button>
+    </div>
+
+    <div class="form-group" id="register-username-group">
+      <label>Username</label>
+      <input type="text" id="username" placeholder="yourname" autocomplete="username" />
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="you@example.com" autocomplete="email" />
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="handleAuth()">Sign in</button>
+    <div class="auth-error" id="auth-error"></div>
+  </div>
+
+  <!-- Main Section (logged in) -->
+  <div id="main-section">
+    <div class="server-error" id="server-error">
+      ⚠ Could not reach server. Check that the backend is running on port 5000.
+    </div>
+
+    <div class="stats-bar">
+      <div class="stats-count">Your cards: <span id="card-count">0</span></div>
+    </div>
+
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Loading flashcards…</p>
+    </div>
+
+    <div id="flashcard-list"></div>
+    <div id="empty-state" class="empty" style="display:none;">
+      <div class="empty-icon">📚</div>
+      <p>No flashcards yet.<br>Highlight a word on any webpage to get started.</p>
+    </div>
+
+    <div class="footer">
+      <a href="options.html" target="_blank" class="footer-btn btn-secondary" style="text-align:center;text-decoration:none;">Manage cards ↗</a>
+      <button class="footer-btn btn-danger" onclick="handleLogout()">Sign out</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API = 'http://localhost:5000';
+let currentTab = 'login';
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+  document.getElementById('register-username-group').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('submit-btn').textContent = tab === 'login' ? 'Sign in' : 'Create account';
+  clearError();
+}
+
+function showError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function clearError() {
+  document.getElementById('auth-error').style.display = 'none';
+}
+
+async function handleAuth() {
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  clearError();
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const username = document.getElementById('username').value.trim();
+
+  if (!email || !password) { showError('Email and password are required.'); btn.disabled = false; return; }
+  if (currentTab === 'register' && !username) { showError('Username is required.'); btn.disabled = false; return; }
+
+  const endpoint = currentTab === 'login' ? '/api/auth/login' : '/api/auth/register';
+  const body = currentTab === 'login' ? { email, password } : { username, email, password };
+
+  try {
+    const res = await fetch(`${API}${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (!res.ok) { showError(data.error || 'Authentication failed.'); btn.disabled = false; return; }
+    chrome.storage.local.set({ token: data.token, user: data.user }, () => showMain(data.token, data.user));
+  } catch (e) {
+    showError('Cannot reach server. Is the backend running?');
+    btn.disabled = false;
+  }
+}
+
+async function showMain(token, user) {
+  document.getElementById('auth-section').style.display = 'none';
+  const main = document.getElementById('main-section');
+  main.style.display = 'flex';
+
+  const headerRight = document.getElementById('header-right');
+  const initials = user ? (user.username || user.email || '?').slice(0, 2).toUpperCase() : '??';
+  const displayName = user ? (user.username || user.email) : '';
+  headerRight.innerHTML = `
+    <div class="user-chip">
+      <div class="avatar">${initials}</div>
+      <span class="user-name">${displayName}</span>
+    </div>
+    <a href="options.html" target="_blank" class="options-btn">Options</a>
+  `;
+
+  await loadFlashcards(token);
+}
+
+async function loadFlashcards(token) {
+  const loading = document.getElementById('loading');
+  const list = document.getElementById('flashcard-list');
+  const empty = document.getElementById('empty-state');
+  const errBanner = document.getElementById('server-error');
+
+  loading.style.display = 'flex';
+  list.innerHTML = '';
+  empty.style.display = 'none';
+  errBanner.style.display = 'none';
+
+  try {
+    const res = await fetch(`${API}/api/flashcards`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    loading.style.display = 'none';
+    if (!res.ok) { errBanner.style.display = 'block'; return; }
+
+    const cards = await res.json();
+    document.getElementById('card-count').textContent = cards.length;
+
+    if (cards.length === 0) { empty.style.display = 'flex'; return; }
+
+    cards.forEach(card => {
+      const div = document.createElement('div');
+      div.className = 'flashcard';
+      const date = card.created_at ? new Date(card.created_at).toLocaleDateString() : '';
+      div.innerHTML = `
+        <div class="fc-q">Question</div>
+        <div class="fc-term">${esc(card.question)}</div>
+        <div class="fc-answer">${esc(card.answer)}</div>
+        ${date ? `<div class="fc-meta">${date}</div>` : ''}
+      `;
+      list.appendChild(div);
+    });
+  } catch(e) {
+    loading.style.display = 'none';
+    errBanner.style.display = 'block';
+  }
+}
+
+function handleLogout() {
+  chrome.storage.local.remove(['token', 'user'], () => location.reload());
+}
+
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+async function init() {
+  const result = await new Promise(r => chrome.storage.local.get(['token','user'], r));
+  if (result.token) {
+    showMain(result.token, result.user);
+  } else {
+    document.getElementById('auth-section').style.display = 'flex';
+  }
+}
+
+document.getElementById('password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleAuth();
+});
+
+init();
+</script>
 </body>
 </html>
