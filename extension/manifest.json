@@ -1,13 +1,21 @@
 {
   "manifest_version": 3,
-  "name": "ContextCard",
+  "name": "FlashCut",
   "version": "0.1.0",
   "description": "AI-powered vocabulary flashcards from real reading",
 
   "permissions": [
     "storage",
-    "activeTab"
+    "activeTab",
+    "tabs"
   ],
+
+  "commands": {
+    "save-flashcard": {
+      "suggested_key": { "default": "Alt+S" },
+      "description": "Save selected text as a FlashCut flashcard"
+    }
+  },
 
   "action": {
     "default_popup": "popup/popup.html",

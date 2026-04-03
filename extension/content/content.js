@@ -1,34 +1,69 @@
-document.addEventListener('mouseup', async () => {
-  const selectedText = window.getSelection().toString().trim();
-  
-  if (selectedText && selectedText.split(' ').length <= 3) {
-    console.log('Selected text:', selectedText);
-    
-    // Get the full sentence (simple version)
-    const sentence = getSentenceFromSelection();
-    
-    // Send to backend API
+// Store the selection when the user releases the mouse so it's available when
+// the keyboard shortcut fires (the selection remains intact, but caching it is
+// more reliable in case a modifier key inadvertently moves focus).
+let _pendingTerm     = null;
+let _pendingSentence = null;
+
+document.addEventListener('mouseup', () => {
+  const text = window.getSelection().toString().trim();
+  if (text && text.split(' ').length <= 3) {
+    _pendingTerm     = text;
+    _pendingSentence = getSentenceFromSelection();
+  } else {
+    _pendingTerm     = null;
+    _pendingSentence = null;
+  }
+});
+
+// Listen for the command forwarded by the background service worker
+chrome.runtime.onMessage.addListener((request) => {
+  if (request.action !== 'save-flashcard') return;
+
+  // Prefer cached value; fall back to live selection
+  const selectedText = _pendingTerm || window.getSelection().toString().trim();
+  const sentence     = _pendingSentence || getSentenceFromSelection();
+  _pendingTerm     = null;
+  _pendingSentence = null;
+
+  if (!selectedText || selectedText.split(' ').length > 3) {
+    console.warn('FlashCut: No valid selection (1–3 words) to save.');
+    return;
+  }
+
+  console.log('Selected text:', selectedText);
+
+  // Send to backend API
+  (async () => {
     try {
+      const { token } = await new Promise(r => chrome.storage.local.get(['token'], r));
+      if (!token) {
+        console.warn('FlashCut: Not logged in — skipping save');
+        return;
+      }
+
       const response = await fetch('http://localhost:5000/api/flashcards', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({
           term: selectedText,
           sentence: sentence,
           sourceUrl: window.location.href
         })
       });
-      
+
       const data = await response.json();
       console.log('Backend response:', data);
-      
+
       // Show confirmation
       showConfirmation(selectedText);
-      
+
     } catch (error) {
       console.error('Error sending to backend:', error);
     }
-  }
+  })();
 });
 
 function getSentenceFromSelection() {
