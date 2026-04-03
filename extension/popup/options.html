@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -33,7 +33,7 @@
       font-size: 14px; display: flex; flex-direction: column;
     }
 
-    /* ── Sidebar + Layout ── */
+    /* ―― Sidebar + Layout ―― */
     .layout { display: flex; min-height: 100vh; }
 
     .sidebar {
@@ -68,6 +68,22 @@
     .nav-icon { font-size: 15px; width: 18px; text-align: center; }
 
     .sidebar-footer { margin-top: auto; padding: 16px; }
+    .shortcut-hint {
+      margin-top: 10px;
+      font-size: 11px; color: #475569;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .shortcut-hint kbd {
+      background: #1a2035; border: 1px solid #2a3147;
+      border-radius: 4px; padding: 1px 5px;
+      font-size: 10px; color: #94a3b8; font-family: inherit;
+    }
+    .shortcut-customize {
+      background: none; border: none; color: #6366f1;
+      font-size: 11px; cursor: pointer; padding: 0;
+      text-decoration: underline; text-underline-offset: 2px;
+    }
+    .shortcut-customize:hover { color: #818cf8; }
     .user-badge {
       display: flex; align-items: center; gap: 8px;
       background: rgba(255,255,255,0.04); border: 1px solid var(--border);
@@ -86,7 +102,7 @@
     .logout-icon { color: var(--faint); cursor: pointer; font-size: 14px; padding: 2px; transition: color 0.12s; }
     .logout-icon:hover { color: var(--danger); }
 
-    /* ── Main Content ── */
+    /* ―― Main Content ―― */
     .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 
     .topbar {
@@ -112,7 +128,7 @@
 
     .content { flex: 1; padding: 24px 28px; }
 
-    /* ── Filters / Search ── */
+    /* ―― Filters / Search ―― */
     .toolbar {
       display: flex; align-items: center; gap: 10px;
       margin-bottom: 20px; flex-wrap: wrap;
@@ -133,7 +149,7 @@
       padding: 8px 10px; outline: none; cursor: pointer;
     }
 
-    /* ── Stats Row ── */
+    /* ―― Stats Row ―― */
     .stats-row {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
       gap: 12px; margin-bottom: 24px;
@@ -146,7 +162,7 @@
     .stat-value { font-size: 22px; font-weight: 600; color: #f1f5f9; }
     .stat-value.accent { color: #a5b4fc; }
 
-    /* ── Error/Loading banners ── */
+    /* ―― Error/Loading banners ―― */
     .banner {
       display: flex; align-items: center; gap: 10px;
       padding: 12px 14px; border-radius: 8px; margin-bottom: 16px;
@@ -156,7 +172,7 @@
     .banner-success { background: var(--success-soft); border: 1px solid #065f46; color: #6ee7b7; }
     #banner { display: none; }
 
-    /* ── Loading ── */
+    /* ―― Loading ―― */
     #loading-state {
       display: flex; flex-direction: column; align-items: center;
       justify-content: center; gap: 14px; padding: 80px 0;
@@ -169,7 +185,7 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     #loading-state p { font-size: 13px; color: var(--faint); }
 
-    /* ── Cards Grid ── */
+    /* â”€â”€ Cards Grid â”€â”€ */
     #cards-grid { display: none; }
 
     .cards-list { display: flex; flex-direction: column; gap: 10px; }
@@ -223,7 +239,7 @@
     .edit-group textarea:focus { border-color: var(--accent); }
     .edit-save-row { display: flex; gap: 8px; margin-top: 4px; }
 
-    /* ── Empty State ── */
+    /* â”€â”€ Empty State â”€â”€ */
     #empty-state {
       display: none; flex-direction: column; align-items: center;
       justify-content: center; gap: 12px; padding: 80px 0; text-align: center;
@@ -232,7 +248,7 @@
     #empty-state h3 { font-size: 16px; font-weight: 500; color: var(--muted); }
     #empty-state p { font-size: 13px; color: var(--faint); max-width: 280px; line-height: 1.6; }
 
-    /* ── Pagination ── */
+    /* â”€â”€ Pagination â”€â”€ */
     .pagination {
       display: flex; align-items: center; justify-content: center;
       gap: 6px; margin-top: 24px; padding-bottom: 8px;
@@ -246,7 +262,7 @@
     .page-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
     .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-    /* ── Export Panel ── */
+    /* â”€â”€ Export Panel â”€â”€ */
     #export-section { display: none; }
     .export-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
     .export-card {
@@ -259,7 +275,7 @@
     .export-card-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
     .export-card-desc { font-size: 12px; color: var(--faint); line-height: 1.5; }
 
-    /* ── Delete confirm modal ── */
+    /* â”€â”€ Delete confirm modal â”€â”€ */
     .modal-overlay {
       display: none; position: fixed; inset: 0;
       background: rgba(0,0,0,0.7); z-index: 999;
@@ -289,10 +305,10 @@
     </div>
 
     <nav>
-      <div class="nav-item active" onclick="showSection('flashcards')" id="nav-flashcards">
-        <span class="nav-icon">🗂</span> My Flashcards
+      <div class="nav-item active" id="nav-flashcards">
+        <span class="nav-icon">🗂️</span> My Flashcards
       </div>
-      <div class="nav-item" onclick="showSection('export')" id="nav-export">
+      <div class="nav-item" id="nav-export">
         <span class="nav-icon">📤</span> Export
       </div>
     </nav>
@@ -304,7 +320,11 @@
           <div class="user-name" id="user-name">Loading…</div>
           <div class="user-email" id="user-email"></div>
         </div>
-        <span class="logout-icon" onclick="handleLogout()" title="Sign out">⏻</span>
+        <span class="logout-icon" id="logout-icon" title="Sign out">⏻</span>
+      </div>
+      <div class="shortcut-hint">
+        <span>Shortcut:</span><kbd>Alt+S</kbd>
+        <button class="shortcut-customize" id="shortcut-link-btn">Customize</button>
       </div>
     </div>
   </aside>
@@ -318,8 +338,8 @@
         <div class="page-sub" id="topbar-sub">View, edit, and manage your saved vocabulary</div>
       </div>
       <div class="topbar-actions" id="topbar-actions">
-        <button class="btn btn-ghost" onclick="loadCards()">↺ Refresh</button>
-        <button class="btn btn-danger-outline" onclick="openDeleteAll()">Clear all</button>
+        <button class="btn btn-ghost" id="refresh-btn">↻ Refresh</button>
+        <button class="btn btn-danger-outline" id="clear-all-btn">Clear all</button>
       </div>
     </div>
 
@@ -329,7 +349,7 @@
       <!-- Global banner -->
       <div class="banner" id="banner"></div>
 
-      <!-- ── Flashcards Section ── -->
+      <!-- ―― Flashcards Section ―― -->
       <div id="flashcards-section">
 
         <div class="stats-row">
@@ -349,10 +369,10 @@
 
         <div class="toolbar">
           <div class="search-wrap">
-            <span class="search-icon">⌕</span>
-            <input type="text" id="search-input" placeholder="Search questions or answers…" oninput="filterCards()" />
+            <span class="search-icon">🔍</span>
+            <input type="text" id="search-input" placeholder="Search questions or answers…" />
           </div>
-          <select class="filter-select" id="sort-select" onchange="filterCards()">
+          <select class="filter-select" id="sort-select">
             <option value="newest">Newest first</option>
             <option value="oldest">Oldest first</option>
             <option value="alpha">A → Z</option>
@@ -376,20 +396,20 @@
         </div>
       </div>
 
-      <!-- ── Export Section ── -->
+      <!-- ―― Export Section ―― -->
       <div id="export-section">
         <div class="export-grid">
-          <div class="export-card" onclick="exportCards('json')">
+          <div class="export-card" id="export-json">
             <div class="export-card-icon">{ }</div>
             <div class="export-card-title">Export as JSON</div>
             <div class="export-card-desc">Full data including IDs and timestamps. Great for backups or importing into other tools.</div>
           </div>
-          <div class="export-card" onclick="exportCards('csv')">
+          <div class="export-card" id="export-csv">
             <div class="export-card-icon">⊞</div>
             <div class="export-card-title">Export as CSV</div>
             <div class="export-card-desc">Spreadsheet-compatible format. Open in Excel, Google Sheets, or Anki import.</div>
           </div>
-          <div class="export-card" onclick="exportCards('txt')">
+          <div class="export-card" id="export-txt">
             <div class="export-card-icon">≡</div>
             <div class="export-card-title">Export as Text</div>
             <div class="export-card-desc">Plain text with Q/A pairs. Easy to read and paste anywhere.</div>
@@ -407,318 +427,12 @@
     <h3 id="modal-title">Delete flashcard?</h3>
     <p id="modal-body">This action cannot be undone.</p>
     <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-ghost" id="modal-cancel">Cancel</button>
       <button class="btn btn-danger-outline" id="modal-confirm">Delete</button>
     </div>
   </div>
 </div>
 
-<script>
-const API = 'http://localhost:5000';
-const PER_PAGE = 10;
-
-let allCards = [];
-let filtered = [];
-let currentPage = 1;
-let token = null;
-let pendingDeleteId = null;
-let deleteAll = false;
-
-// ── Boot ──
-async function init() {
-  const result = await new Promise(r => chrome.storage.local.get(['token','user'], r));
-  if (!result.token) { window.location.href = 'popup.html'; return; }
-  token = result.token;
-
-  const user = result.user || {};
-  const initials = (user.username || user.email || '?').slice(0, 2).toUpperCase();
-  document.getElementById('user-avatar').textContent = initials;
-  document.getElementById('user-name').textContent = user.username || user.email || 'User';
-  document.getElementById('user-email').textContent = user.email || '';
-
-  await loadCards();
-}
-
-// ── Load cards ──
-async function loadCards() {
-  document.getElementById('loading-state').style.display = 'flex';
-  document.getElementById('cards-grid').style.display = 'none';
-  document.getElementById('empty-state').style.display = 'none';
-  hideBanner();
-
-  try {
-    const res = await fetch(`${API}/api/flashcards`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if (!res.ok) throw new Error('Unauthorized');
-    allCards = await res.json();
-    filterCards();
-  } catch(e) {
-    showBanner('error', '⚠ Could not reach server. Make sure the backend is running on port 5000.');
-    document.getElementById('loading-state').style.display = 'none';
-  }
-}
-
-// ── Filter + sort ──
-function filterCards() {
-  const q = document.getElementById('search-input').value.toLowerCase();
-  const sort = document.getElementById('sort-select').value;
-
-  filtered = allCards.filter(c =>
-    (c.question || '').toLowerCase().includes(q) ||
-    (c.answer || '').toLowerCase().includes(q)
-  );
-
-  if (sort === 'newest') filtered.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
-  else if (sort === 'oldest') filtered.sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
-  else filtered.sort((a,b) => (a.question||'').localeCompare(b.question||''));
-
-  currentPage = 1;
-  renderCards();
-}
-
-// ── Render ──
-function renderCards() {
-  const loading = document.getElementById('loading-state');
-  const grid = document.getElementById('cards-grid');
-  const empty = document.getElementById('empty-state');
-  const list = document.getElementById('cards-list');
-
-  loading.style.display = 'none';
-
-  const weekAgo = Date.now() - 7 * 86400000;
-  const weekCount = allCards.filter(c => new Date(c.created_at) > weekAgo).length;
-  document.getElementById('stat-total').textContent = allCards.length;
-  document.getElementById('stat-week').textContent = weekCount;
-  document.getElementById('stat-showing').textContent = filtered.length;
-
-  if (filtered.length === 0) {
-    grid.style.display = 'none';
-    empty.style.display = 'flex';
-    return;
-  }
-
-  empty.style.display = 'none';
-  grid.style.display = 'block';
-
-  const start = (currentPage - 1) * PER_PAGE;
-  const page = filtered.slice(start, start + PER_PAGE);
-
-  list.innerHTML = '';
-  page.forEach(card => {
-    const el = createCardEl(card);
-    list.appendChild(el);
-  });
-
-  renderPagination();
-}
-
-function createCardEl(card) {
-  const div = document.createElement('div');
-  div.className = 'fc-card';
-  div.id = `card-${card.id}`;
-
-  const date = card.created_at ? new Date(card.created_at).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' }) : '';
-
-  div.innerHTML = `
-    <div class="fc-card-top">
-      <div class="fc-body">
-        <div class="fc-q-label">Q</div>
-        <div class="fc-question" id="q-${card.id}">${esc(card.question)}</div>
-        <div class="fc-a-label">A</div>
-        <div class="fc-answer" id="a-${card.id}">${esc(card.answer)}</div>
-        ${date ? `<div class="fc-date">${date}</div>` : ''}
-      </div>
-      <div class="fc-actions">
-        <button class="action-btn btn-edit" onclick="startEdit(${card.id})">Edit</button>
-        <button class="action-btn btn-delete" onclick="openDeleteOne(${card.id})">Delete</button>
-      </div>
-    </div>
-    <div class="edit-fields" id="edit-${card.id}" style="display:none;">
-      <div class="edit-group">
-        <label>Question</label>
-        <input type="text" id="edit-q-${card.id}" value="${esc(card.question)}" />
-      </div>
-      <div class="edit-group">
-        <label>Answer</label>
-        <textarea id="edit-a-${card.id}" rows="3">${esc(card.answer)}</textarea>
-      </div>
-      <div class="edit-save-row">
-        <button class="action-btn btn-save" onclick="saveEdit(${card.id})">Save</button>
-        <button class="action-btn btn-cancel" onclick="cancelEdit(${card.id})">Cancel</button>
-      </div>
-    </div>
-  `;
-  return div;
-}
-
-// ── Pagination ──
-function renderPagination() {
-  const total = Math.ceil(filtered.length / PER_PAGE);
-  const pag = document.getElementById('pagination');
-  pag.innerHTML = '';
-  if (total <= 1) return;
-
-  const prev = document.createElement('button');
-  prev.className = 'page-btn';
-  prev.textContent = '← Prev';
-  prev.disabled = currentPage === 1;
-  prev.onclick = () => { currentPage--; renderCards(); };
-  pag.appendChild(prev);
-
-  for (let i = 1; i <= total; i++) {
-    if (total > 7 && Math.abs(i - currentPage) > 2 && i !== 1 && i !== total) {
-      if (i === 2 || i === total - 1) { const dot = document.createElement('span'); dot.textContent = '…'; dot.style.padding = '0 4px'; dot.style.color = 'var(--faint)'; pag.appendChild(dot); }
-      continue;
-    }
-    const btn = document.createElement('button');
-    btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
-    btn.textContent = i;
-    btn.onclick = () => { currentPage = i; renderCards(); };
-    pag.appendChild(btn);
-  }
-
-  const next = document.createElement('button');
-  next.className = 'page-btn';
-  next.textContent = 'Next →';
-  next.disabled = currentPage === total;
-  next.onclick = () => { currentPage++; renderCards(); };
-  pag.appendChild(next);
-}
-
-// ── Edit ──
-function startEdit(id) {
-  document.getElementById(`edit-${id}`).style.display = 'block';
-  document.getElementById(`card-${id}`).classList.add('editing');
-}
-function cancelEdit(id) {
-  document.getElementById(`edit-${id}`).style.display = 'none';
-  document.getElementById(`card-${id}`).classList.remove('editing');
-}
-async function saveEdit(id) {
-  const q = document.getElementById(`edit-q-${id}`).value.trim();
-  const a = document.getElementById(`edit-a-${id}`).value.trim();
-  if (!q || !a) { showBanner('error', 'Question and answer cannot be empty.'); return; }
-
-  try {
-    const res = await fetch(`${API}/api/flashcards/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-      body: JSON.stringify({ question: q, answer: a })
-    });
-    if (!res.ok) throw new Error();
-
-    const idx = allCards.findIndex(c => c.id === id);
-    if (idx >= 0) { allCards[idx].question = q; allCards[idx].answer = a; }
-
-    document.getElementById(`q-${id}`).textContent = q;
-    document.getElementById(`a-${id}`).textContent = a;
-    cancelEdit(id);
-    showBanner('success', '✓ Flashcard updated.');
-  } catch(e) {
-    showBanner('error', 'Failed to update. Check server connection.');
-  }
-}
-
-// ── Delete ──
-function openDeleteOne(id) {
-  pendingDeleteId = id; deleteAll = false;
-  document.getElementById('modal-title').textContent = 'Delete this flashcard?';
-  document.getElementById('modal-body').textContent = 'This action cannot be undone.';
-  document.getElementById('modal-confirm').onclick = confirmDelete;
-  document.getElementById('delete-modal').classList.add('open');
-}
-function openDeleteAll() {
-  if (allCards.length === 0) return;
-  pendingDeleteId = null; deleteAll = true;
-  document.getElementById('modal-title').textContent = `Delete all ${allCards.length} flashcards?`;
-  document.getElementById('modal-body').textContent = 'Every flashcard in your account will be permanently removed. This cannot be undone.';
-  document.getElementById('modal-confirm').onclick = confirmDelete;
-  document.getElementById('delete-modal').classList.add('open');
-}
-function closeModal() { document.getElementById('delete-modal').classList.remove('open'); }
-
-async function confirmDelete() {
-  closeModal();
-  try {
-    if (deleteAll) {
-      const ids = allCards.map(c => c.id);
-      await Promise.all(ids.map(id => fetch(`${API}/api/flashcards/${id}`, {
-        method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
-      })));
-      allCards = [];
-    } else {
-      const res = await fetch(`${API}/api/flashcards/${pendingDeleteId}`, {
-        method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (!res.ok) throw new Error();
-      allCards = allCards.filter(c => c.id !== pendingDeleteId);
-    }
-    filterCards();
-    showBanner('success', deleteAll ? '✓ All flashcards deleted.' : '✓ Flashcard deleted.');
-  } catch(e) {
-    showBanner('error', 'Delete failed. Check server connection.');
-  }
-}
-
-// ── Export ──
-function exportCards(format) {
-  if (allCards.length === 0) { showBanner('error', 'No flashcards to export.'); return; }
-
-  let content, mime, ext;
-  if (format === 'json') {
-    content = JSON.stringify(allCards.map(c => ({ id: c.id, question: c.question, answer: c.answer, created_at: c.created_at })), null, 2);
-    mime = 'application/json'; ext = 'json';
-  } else if (format === 'csv') {
-    const rows = [['id','question','answer','created_at'],
-      ...allCards.map(c => [c.id, `"${(c.question||'').replace(/"/g,'""')}"`, `"${(c.answer||'').replace(/"/g,'""')}"`, c.created_at])];
-    content = rows.map(r => r.join(',')).join('\n');
-    mime = 'text/csv'; ext = 'csv';
-  } else {
-    content = allCards.map((c,i) => `${i+1}. Q: ${c.question}\n   A: ${c.answer}`).join('\n\n');
-    mime = 'text/plain'; ext = 'txt';
-  }
-
-  const blob = new Blob([content], { type: mime });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = `flashcut-export-${new Date().toISOString().slice(0,10)}.${ext}`;
-  a.click(); URL.revokeObjectURL(url);
-  showBanner('success', `✓ Exported ${allCards.length} cards as ${ext.toUpperCase()}.`);
-}
-
-// ── Sections ──
-function showSection(name) {
-  ['flashcards','export'].forEach(s => {
-    document.getElementById(`${s}-section`).style.display = s === name ? 'block' : 'none';
-    document.getElementById(`nav-${s}`).classList.toggle('active', s === name);
-  });
-  const titles = { flashcards: ['My Flashcards', 'View, edit, and manage your saved vocabulary'], export: ['Export', 'Download your flashcards in your preferred format'] };
-  document.getElementById('topbar-title').textContent = titles[name][0];
-  document.getElementById('topbar-sub').textContent = titles[name][1];
-  document.getElementById('topbar-actions').style.display = name === 'flashcards' ? 'flex' : 'none';
-}
-
-// ── Banner ──
-function showBanner(type, msg) {
-  const el = document.getElementById('banner');
-  el.className = `banner banner-${type === 'error' ? 'error' : 'success'}`;
-  el.textContent = msg;
-  el.style.display = 'flex';
-  setTimeout(() => { el.style.display = 'none'; }, 4000);
-}
-function hideBanner() { document.getElementById('banner').style.display = 'none'; }
-
-// ── Logout ──
-function handleLogout() {
-  chrome.storage.local.remove(['token','user'], () => { window.location.href = 'popup.html'; });
-}
-
-function esc(str) {
-  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-init();
-</script>
+<script src="options.js"></script>
 </body>
 </html>
