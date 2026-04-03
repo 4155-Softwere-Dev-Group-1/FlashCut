@@ -202,6 +202,24 @@
       background: #1c1212; color: #f87171; border-color: #7f1d1d;
     }
     .btn-danger:hover { background: #2a1515; }
+
+    /* ── Shortcut hint ── */
+    .shortcut-hint {
+      padding: 6px 14px 8px;
+      font-size: 11px; color: #475569;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .shortcut-hint kbd {
+      background: #1e2330; border: 1px solid #2a3147;
+      border-radius: 4px; padding: 1px 5px;
+      font-size: 10px; color: #94a3b8; font-family: inherit;
+    }
+    .shortcut-customize {
+      background: none; border: none; color: #6366f1;
+      font-size: 11px; cursor: pointer; padding: 0;
+      text-decoration: underline; text-underline-offset: 2px;
+    }
+    .shortcut-customize:hover { color: #818cf8; }
   </style>
 </head>
 <body>
@@ -228,8 +246,8 @@
     <div class="auth-sub">Sign in to access your flashcards across all devices</div>
 
     <div class="tab-row">
-      <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Sign in</button>
-      <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Create account</button>
+      <button class="tab-btn active" id="tab-login">Sign in</button>
+      <button class="tab-btn" id="tab-register">Create account</button>
     </div>
 
     <div class="form-group" id="register-username-group">
@@ -245,7 +263,7 @@
       <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
     </div>
 
-    <button class="submit-btn" id="submit-btn" onclick="handleAuth()">Sign in</button>
+    <button class="submit-btn" id="submit-btn">Sign in</button>
     <div class="auth-error" id="auth-error"></div>
   </div>
 
@@ -270,148 +288,18 @@
       <p>No flashcards yet.<br>Highlight a word on any webpage to get started.</p>
     </div>
 
+    <div class="shortcut-hint">
+      <span>Shortcut:</span><kbd>Alt+S</kbd>
+      <button class="shortcut-customize" id="shortcut-link-btn">Customize</button>
+    </div>
     <div class="footer">
       <a href="options.html" target="_blank" class="footer-btn btn-secondary" style="text-align:center;text-decoration:none;">Manage cards ↗</a>
-      <button class="footer-btn btn-danger" onclick="handleLogout()">Sign out</button>
+      <button class="footer-btn btn-danger" id="logout-btn">Sign out</button>
     </div>
   </div>
 
 </div>
 
-<script>
-const API = 'http://localhost:5000';
-let currentTab = 'login';
-
-function switchTab(tab) {
-  currentTab = tab;
-  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
-  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
-  document.getElementById('register-username-group').style.display = tab === 'register' ? 'block' : 'none';
-  document.getElementById('submit-btn').textContent = tab === 'login' ? 'Sign in' : 'Create account';
-  clearError();
-}
-
-function showError(msg) {
-  const el = document.getElementById('auth-error');
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-function clearError() {
-  document.getElementById('auth-error').style.display = 'none';
-}
-
-async function handleAuth() {
-  const btn = document.getElementById('submit-btn');
-  btn.disabled = true;
-  clearError();
-
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-  const username = document.getElementById('username').value.trim();
-
-  if (!email || !password) { showError('Email and password are required.'); btn.disabled = false; return; }
-  if (currentTab === 'register' && !username) { showError('Username is required.'); btn.disabled = false; return; }
-
-  const endpoint = currentTab === 'login' ? '/api/auth/login' : '/api/auth/register';
-  const body = currentTab === 'login' ? { email, password } : { username, email, password };
-
-  try {
-    const res = await fetch(`${API}${endpoint}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    const data = await res.json();
-    if (!res.ok) { showError(data.error || 'Authentication failed.'); btn.disabled = false; return; }
-    chrome.storage.local.set({ token: data.token, user: data.user }, () => showMain(data.token, data.user));
-  } catch (e) {
-    showError('Cannot reach server. Is the backend running?');
-    btn.disabled = false;
-  }
-}
-
-async function showMain(token, user) {
-  document.getElementById('auth-section').style.display = 'none';
-  const main = document.getElementById('main-section');
-  main.style.display = 'flex';
-
-  const headerRight = document.getElementById('header-right');
-  const initials = user ? (user.username || user.email || '?').slice(0, 2).toUpperCase() : '??';
-  const displayName = user ? (user.username || user.email) : '';
-  headerRight.innerHTML = `
-    <div class="user-chip">
-      <div class="avatar">${initials}</div>
-      <span class="user-name">${displayName}</span>
-    </div>
-    <a href="options.html" target="_blank" class="options-btn">Options</a>
-  `;
-
-  await loadFlashcards(token);
-}
-
-async function loadFlashcards(token) {
-  const loading = document.getElementById('loading');
-  const list = document.getElementById('flashcard-list');
-  const empty = document.getElementById('empty-state');
-  const errBanner = document.getElementById('server-error');
-
-  loading.style.display = 'flex';
-  list.innerHTML = '';
-  empty.style.display = 'none';
-  errBanner.style.display = 'none';
-
-  try {
-    const res = await fetch(`${API}/api/flashcards`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    loading.style.display = 'none';
-    if (!res.ok) { errBanner.style.display = 'block'; return; }
-
-    const cards = await res.json();
-    document.getElementById('card-count').textContent = cards.length;
-
-    if (cards.length === 0) { empty.style.display = 'flex'; return; }
-
-    cards.forEach(card => {
-      const div = document.createElement('div');
-      div.className = 'flashcard';
-      const date = card.created_at ? new Date(card.created_at).toLocaleDateString() : '';
-      div.innerHTML = `
-        <div class="fc-q">Question</div>
-        <div class="fc-term">${esc(card.question)}</div>
-        <div class="fc-answer">${esc(card.answer)}</div>
-        ${date ? `<div class="fc-meta">${date}</div>` : ''}
-      `;
-      list.appendChild(div);
-    });
-  } catch(e) {
-    loading.style.display = 'none';
-    errBanner.style.display = 'block';
-  }
-}
-
-function handleLogout() {
-  chrome.storage.local.remove(['token', 'user'], () => location.reload());
-}
-
-function esc(str) {
-  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-async function init() {
-  const result = await new Promise(r => chrome.storage.local.get(['token','user'], r));
-  if (result.token) {
-    showMain(result.token, result.user);
-  } else {
-    document.getElementById('auth-section').style.display = 'flex';
-  }
-}
-
-document.getElementById('password').addEventListener('keydown', e => {
-  if (e.key === 'Enter') handleAuth();
-});
-
-init();
-</script>
+<script src="popup.js"></script>
 </body>
 </html>
