@@ -9,5 +9,7 @@ const router = express.Router();
 
 router.post('/', requireAuth, validateRequest, controller.createFlashcard); 
 router.get('/', requireAuth, controller.getFlashcards); 
+router.put('/:id', requireAuth, controller.updateFlashcard);
+router.delete('/:id', requireAuth, controller.deleteFlashcard);
 
 module.exports = router;

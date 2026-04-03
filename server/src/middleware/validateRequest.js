@@ -1,25 +1,25 @@
 // Request validation middleware
 
 function validateRequest(req, res, next) {
-  const { content } = req.body;
+  const { term } = req.body;
 
-  if (!content) {
-    return res.status(400).json({ error: 'content is required' });
+  if (!term) {
+    return res.status(400).json({ error: 'term is required' });
   }
 
-  if (typeof content !== 'string') {
-    return res.status(400).json({ error: 'content must be a string' });
+  if (typeof term !== 'string') {
+    return res.status(400).json({ error: 'term must be a string' });
   }
 
-  if (content.trim().length === 0) {
-    return res.status(400).json({ error: 'content cannot be blank' });
+  if (term.trim().length === 0) {
+    return res.status(400).json({ error: 'term cannot be blank' });
   }
 
-  if (content.length > 1000) {
-    return res.status(400).json({ error: 'content must be 1000 characters or fewer' });
+  if (term.length > 200) {
+    return res.status(400).json({ error: 'term must be 200 characters or fewer' });
   }
 
-  req.body.content = content.trim();
+  req.body.term = term.trim();
   next();
 }
 

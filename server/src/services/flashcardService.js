@@ -22,7 +22,27 @@ async function getAllFlashcards(userId) {
   return result.rows;
 }
 
+async function updateFlashcard(id, userId, question, answer) {
+  const result = await pool.query(
+    `UPDATE flashcards SET question = $1, answer = $2, updated_at = NOW()
+     WHERE id = $3 AND user_id = $4
+     RETURNING *`,
+    [question, answer, id, userId]
+  );
+  return result.rows[0] || null;
+}
+
+async function deleteFlashcard(id, userId) {
+  const result = await pool.query(
+    'DELETE FROM flashcards WHERE id = $1 AND user_id = $2 RETURNING id',
+    [id, userId]
+  );
+  return result.rows[0] || null;
+}
+
 module.exports = {
   generateFlashcard,
   getAllFlashcards,
+  updateFlashcard,
+  deleteFlashcard,
 };
