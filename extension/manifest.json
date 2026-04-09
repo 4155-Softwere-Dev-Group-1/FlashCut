@@ -14,6 +14,10 @@
     "save-flashcard": {
       "suggested_key": { "default": "Alt+S" },
       "description": "Save selected text as a FlashCut flashcard"
+    },
+    "simplify-selection": {
+      "suggested_key": { "default": "Alt+D" },
+      "description": "Simplify or paraphrase the selected passage"
     }
   },
 
