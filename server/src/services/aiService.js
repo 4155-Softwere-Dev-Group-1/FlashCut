@@ -34,6 +34,31 @@ Respond with ONLY a JSON object in this exact format:
   }
 }
 
+async function simplifyText(text) {
+  try {
+    console.log(`[AI] Simplifying passage (${text.length} chars)`);
+    const response = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 500,
+      messages: [{
+        role: 'user',
+        content: `You help readers understand difficult text. Rewrite the passage below in simpler, clearer English. Preserve the original meaning. Output only the simplified text—no title, quotes, or explanation.
+
+Passage:
+${text}`,
+      }]
+    });
+
+    const simplified = response.content[0].text.trim();
+    console.log(`[AI] Simplified (${simplified.length} chars)`);
+    return { simplified };
+  } catch (error) {
+    console.error('AI simplify error:', error.message);
+    throw error;
+  }
+}
+
 module.exports = {
   generateFlashcard,
+  simplifyText,
 };

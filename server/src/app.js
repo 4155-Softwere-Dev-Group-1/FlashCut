@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const flashcardRoutes = require('./routes/flashcardRoutes');
 const authRoutes = require('./routes/authRoutes');
+const simplifyRoutes = require('./routes/simplifyRoutes');
 
 const app = express();
 
@@ -16,12 +17,13 @@ app.get('/health', (req, res) => {
 
 // Root route
 app.get('/', (req, res) => {
-  res.json({ status: 'FlashCut API', routes: ['/health', '/api/auth', '/api/flashcards'] });
+  res.json({ status: 'FlashCut API', routes: ['/health', '/api/auth', '/api/flashcards', '/api/simplify'] });
 });
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/flashcards', flashcardRoutes);
+app.use('/api/simplify', simplifyRoutes);
 app.use(require('./middleware/errorHandler'));
 
 module.exports = app;

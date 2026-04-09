@@ -6,10 +6,11 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Forward the keyboard shortcut to the active tab's content script
 chrome.commands.onCommand.addListener((command) => {
-  if (command === 'save-flashcard') {
+  if (command === 'save-flashcard' || command === 'simplify-selection') {
+    const action = command === 'save-flashcard' ? 'save-flashcard' : 'simplify-selection';
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0]?.id) {
-        chrome.tabs.sendMessage(tabs[0].id, { action: 'save-flashcard' });
+        chrome.tabs.sendMessage(tabs[0].id, { action });
       }
     });
   }

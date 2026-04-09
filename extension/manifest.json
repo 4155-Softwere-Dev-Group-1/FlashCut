@@ -10,10 +10,24 @@
     "tabs"
   ],
 
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+
+  "host_permissions": [
+    "http://localhost:5001/*",
+    "http://127.0.0.1:5001/*"
+  ],
+
   "commands": {
     "save-flashcard": {
       "suggested_key": { "default": "Alt+S" },
       "description": "Save selected text as a FlashCut flashcard"
+    },
+    "simplify-selection": {
+      "suggested_key": { "default": "Alt+D" },
+      "description": "Simplify or paraphrase the selected passage"
     }
   },
 
@@ -29,7 +43,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content/content.js"],
+      "js": ["lib/apiConfig.js", "content/content.js"],
       "run_at": "document_end"
     }
   ],
