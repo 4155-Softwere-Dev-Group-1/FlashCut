@@ -1,7 +1,7 @@
 // Single source of truth for FlashCut API base URL (no trailing slash).
 // Override via chrome.storage.local key flashcutApiBaseUrl (set from Options).
 
-const DEFAULT_FLASHCUT_API_BASE = 'http://localhost:5000';
+const DEFAULT_FLASHCUT_API_BASE = 'http://localhost:5001';
 const STORAGE_KEY = 'flashcutApiBaseUrl';
 
 function normalizeBaseUrl(url) {
@@ -39,11 +39,11 @@ function setFlashcutApiBaseUrl(url) {
   });
 }
 
-// Manifest grants only http://localhost:5000 and http://127.0.0.1:5000 — other origins need optional permission.
+// Manifest grants only http://localhost:5001 and http://127.0.0.1:5001 — other origins need optional permission.
 function manifestCoversOrigin(u) {
   const h = u.hostname;
   if (h !== 'localhost' && h !== '127.0.0.1') return false;
-  return u.port === '5000';
+  return u.port === '5001';
 }
 
 async function prepareAndSaveFlashcutApiBaseUrl(url) {

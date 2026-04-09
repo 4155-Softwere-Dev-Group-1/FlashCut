@@ -4,7 +4,7 @@ let allCards = [];
 let filtered = [];
 let currentPage = 1;
 let token = null;
-let apiBase = 'http://localhost:5000';
+let apiBase = 'http://localhost:5001';
 let pendingDeleteId = null;
 let deleteAll = false;
 
@@ -43,7 +43,7 @@ async function loadCards() {
     allCards = await res.json();
     filterCards();
   } catch(e) {
-    showBanner('error', '⚠ Could not reach server. Make sure the backend is running on port 5000.');
+    showBanner('error', '⚠ Could not reach server. Make sure the backend is running (default port 5001).');
     document.getElementById('loading-state').style.display = 'none';
   }
 }

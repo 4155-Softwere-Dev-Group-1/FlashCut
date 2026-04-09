@@ -50,7 +50,7 @@ Express app with a layered backend structure:
 This flow is visible in:
 
 - Manifest wiring (popup + content script + service worker)
-- Extension API client target (`http://localhost:5000/api/flashcards`)
+- Extension API client target (`http://localhost:5001/api/flashcards`)
 - Server route → controller → service chain
 - Server startup + route mount path
 
