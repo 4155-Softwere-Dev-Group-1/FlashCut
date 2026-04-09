@@ -10,6 +10,16 @@
     "tabs"
   ],
 
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+
+  "host_permissions": [
+    "http://localhost:5000/*",
+    "http://127.0.0.1:5000/*"
+  ],
+
   "commands": {
     "save-flashcard": {
       "suggested_key": { "default": "Alt+S" },
@@ -33,7 +43,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content/content.js"],
+      "js": ["lib/apiConfig.js", "content/content.js"],
       "run_at": "document_end"
     }
   ],

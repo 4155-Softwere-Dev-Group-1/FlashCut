@@ -1,4 +1,3 @@
-const API = 'http://localhost:5000';
 let currentTab = 'login';
 
 function switchTab(tab) {
@@ -35,7 +34,8 @@ async function handleAuth() {
   const body = currentTab === 'login' ? { email, password } : { username, email, password };
 
   try {
-    const res = await fetch(`${API}${endpoint}`, {
+    const apiBase = await getFlashcutApiBaseUrl();
+    const res = await fetch(`${apiBase}${endpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
@@ -44,7 +44,7 @@ async function handleAuth() {
     if (!res.ok) { showError(data.error || 'Authentication failed.'); btn.disabled = false; return; }
     chrome.storage.local.set({ token: data.token, user: data.user }, () => showMain(data.token, data.user));
   } catch (e) {
-    showError('Cannot reach server. Is the backend running?');
+    showError('Cannot reach server. Check Backend URL in Options and that the API is running.');
     btn.disabled = false;
   }
 }
@@ -80,7 +80,8 @@ async function loadFlashcards(token) {
   errBanner.style.display = 'none';
 
   try {
-    const res = await fetch(`${API}/api/flashcards`, {
+    const apiBase = await getFlashcutApiBaseUrl();
+    const res = await fetch(`${apiBase}/api/flashcards`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     loading.style.display = 'none';

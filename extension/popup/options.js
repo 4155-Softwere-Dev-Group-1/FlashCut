@@ -1,10 +1,10 @@
-const API = 'http://localhost:5000';
 const PER_PAGE = 10;
 
 let allCards = [];
 let filtered = [];
 let currentPage = 1;
 let token = null;
+let apiBase = 'http://localhost:5000';
 let pendingDeleteId = null;
 let deleteAll = false;
 
@@ -13,6 +13,10 @@ async function init() {
   const result = await new Promise(r => chrome.storage.local.get(['token','user'], r));
   if (!result.token) { window.location.href = 'popup.html'; return; }
   token = result.token;
+
+  apiBase = await getFlashcutApiBaseUrl();
+  const apiInput = document.getElementById('api-base-url');
+  if (apiInput) apiInput.value = apiBase;
 
   const user = result.user || {};
   const initials = (user.username || user.email || '?').slice(0, 2).toUpperCase();
@@ -25,13 +29,14 @@ async function init() {
 
 // ── Load cards ──
 async function loadCards() {
+  apiBase = await getFlashcutApiBaseUrl();
   document.getElementById('loading-state').style.display = 'flex';
   document.getElementById('cards-grid').style.display = 'none';
   document.getElementById('empty-state').style.display = 'none';
   hideBanner();
 
   try {
-    const res = await fetch(`${API}/api/flashcards`, {
+    const res = await fetch(`${apiBase}/api/flashcards`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     if (!res.ok) throw new Error('Unauthorized');
@@ -227,7 +232,7 @@ async function saveEdit(id) {
   if (!q || !a) { showBanner('error', 'Question and answer cannot be empty.'); return; }
 
   try {
-    const res = await fetch(`${API}/api/flashcards/${id}`, {
+    const res = await fetch(`${apiBase}/api/flashcards/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
       body: JSON.stringify({ question: q, answer: a })
@@ -269,12 +274,12 @@ async function confirmDelete() {
   try {
     if (deleteAll) {
       const ids = allCards.map(c => c.id);
-      await Promise.all(ids.map(id => fetch(`${API}/api/flashcards/${id}`, {
+      await Promise.all(ids.map(id => fetch(`${apiBase}/api/flashcards/${id}`, {
         method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
       })));
       allCards = [];
     } else {
-      const res = await fetch(`${API}/api/flashcards/${pendingDeleteId}`, {
+      const res = await fetch(`${apiBase}/api/flashcards/${pendingDeleteId}`, {
         method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!res.ok) throw new Error();
@@ -358,6 +363,17 @@ document.getElementById('export-txt').addEventListener('click', () => exportCard
 document.getElementById('modal-cancel').addEventListener('click', closeModal);
 document.getElementById('shortcut-link-btn').addEventListener('click', () => {
   chrome.tabs.create({ url: 'chrome://extensions/shortcuts' });
+});
+
+document.getElementById('api-base-save').addEventListener('click', async () => {
+  const raw = document.getElementById('api-base-url').value.trim();
+  try {
+    apiBase = await prepareAndSaveFlashcutApiBaseUrl(raw);
+    document.getElementById('api-base-url').value = apiBase;
+    showBanner('success', '✓ Backend URL saved. Reload the extension if shortcuts misbehave.');
+  } catch (e) {
+    showBanner('error', 'Could not save Backend URL.');
+  }
 });
 
 init();

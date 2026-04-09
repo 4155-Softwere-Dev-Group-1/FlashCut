@@ -102,6 +102,44 @@
     .logout-icon { color: var(--faint); cursor: pointer; font-size: 14px; padding: 2px; transition: color 0.12s; }
     .logout-icon:hover { color: var(--danger); }
 
+    .api-url-block {
+      padding: 12px 0 0;
+      margin-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .api-url-block label {
+      display: block;
+      font-size: 10px;
+      color: var(--faint);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .api-url-block input {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border2);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 12px;
+      margin-bottom: 8px;
+      box-sizing: border-box;
+    }
+    .api-url-block input:focus { outline: none; border-color: var(--accent); }
+    .btn-api-save {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border2);
+      background: var(--accent-soft);
+      color: #a5b4fc;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .btn-api-save:hover { background: rgba(99,102,241,0.25); color: var(--text); }
+
     /* ―― Main Content ―― */
     .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 
@@ -322,6 +360,11 @@
         </div>
         <span class="logout-icon" id="logout-icon" title="Sign out">⏻</span>
       </div>
+      <div class="api-url-block">
+        <label for="api-base-url">Backend URL</label>
+        <input type="url" id="api-base-url" placeholder="http://localhost:5000" autocomplete="off" spellcheck="false" />
+        <button type="button" class="btn-api-save" id="api-base-save">Save</button>
+      </div>
       <div class="shortcut-hint">
         <span>Shortcuts:</span><kbd>Alt+S</kbd><span>card</span><span>·</span><kbd>Alt+D</kbd><span>simplify</span>
         <button class="shortcut-customize" id="shortcut-link-btn">Customize</button>
@@ -433,6 +476,7 @@
   </div>
 </div>
 
+<script src="../lib/apiConfig.js"></script>
 <script src="options.js"></script>
 </body>
 </html>

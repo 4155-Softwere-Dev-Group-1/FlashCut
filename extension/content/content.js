@@ -1,6 +1,7 @@
 // Store the selection when the user releases the mouse so it's available when
 // the keyboard shortcut fires (the selection remains intact, but caching it is
 // more reliable in case a modifier key inadvertently moves focus).
+// getFlashcutApiBaseUrl is defined in lib/apiConfig.js (loaded before this script).
 let _pendingTerm          = null;
 let _pendingSentence      = null;
 let _pendingSimplifyText  = null;
@@ -48,7 +49,8 @@ function handleSaveFlashcard() {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/flashcards', {
+      const apiBase = await getFlashcutApiBaseUrl();
+      const response = await fetch(`${apiBase}/api/flashcards`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -61,13 +63,20 @@ function handleSaveFlashcard() {
         })
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
       console.log('Backend response:', data);
+
+      if (!response.ok) {
+        console.warn('FlashCut: Save failed', data.error || response.status);
+        showFlashcutToast(data.error || 'Could not save flashcard. Try again.');
+        return;
+      }
 
       showConfirmation(selectedText);
 
     } catch (error) {
       console.error('Error sending to backend:', error);
+      showFlashcutToast('Cannot reach server. Check Backend URL in Options.');
     }
   })();
 }
@@ -78,7 +87,7 @@ function handleSimplifySelection() {
 
   if (!selectedText || selectedText.split(/\s+/).filter(Boolean).length < 2) {
     console.warn('FlashCut: Select at least two words to simplify.');
-    showSimplifyToast('Select at least two words, then press Alt+D.');
+    showFlashcutToast('Select at least two words, then press Alt+D.');
     return;
   }
 
@@ -87,13 +96,14 @@ function handleSimplifySelection() {
       const { token } = await new Promise(r => chrome.storage.local.get(['token'], r));
       if (!token) {
         console.warn('FlashCut: Not logged in — skipping simplify');
-        showSimplifyToast('Sign in to FlashCut to use simplify.');
+        showFlashcutToast('Sign in to FlashCut to use simplify.');
         return;
       }
 
       const loading = showSimplifyLoading();
 
-      const response = await fetch('http://localhost:5000/api/simplify', {
+      const apiBase = await getFlashcutApiBaseUrl();
+      const response = await fetch(`${apiBase}/api/simplify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,11 +120,16 @@ function handleSimplifySelection() {
         return;
       }
 
+      if (data.simplified == null || String(data.simplified).trim() === '') {
+        showSimplifyModalError('Server returned an empty simplification.');
+        return;
+      }
+
       showSimplifyModal(selectedText, data.simplified);
     } catch (error) {
       console.error('Error simplifying:', error);
       removeSimplifyOverlay();
-      showSimplifyModalError('Cannot reach server. Is the backend running?');
+      showSimplifyModalError('Cannot reach server. Check Backend URL in Options.');
     }
   })();
 }
@@ -157,7 +172,7 @@ function showConfirmation(term) {
   setTimeout(() => notification.remove(), 2000);
 }
 
-function showSimplifyToast(message) {
+function showFlashcutToast(message) {
   const el = document.createElement('div');
   el.textContent = message;
   el.style.cssText = `
@@ -279,7 +294,7 @@ function showSimplifyModal(original, simplified) {
       btn.textContent = 'Copied';
       setTimeout(() => { btn.textContent = prev; }, 1500);
     } catch (_) {
-      showSimplifyToast('Could not copy to clipboard.');
+      showFlashcutToast('Could not copy to clipboard.');
     }
   });
 }
