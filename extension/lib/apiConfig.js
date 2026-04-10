@@ -1,7 +1,7 @@
 // Single source of truth for FlashCut API base URL (no trailing slash).
 // Override via chrome.storage.local key flashcutApiBaseUrl (set from Options).
 
-const DEFAULT_FLASHCUT_API_BASE = 'http://localhost:5001';
+const DEFAULT_FLASHCUT_API_BASE = 'https://flashcut.onrender.com';
 const STORAGE_KEY = 'flashcutApiBaseUrl';
 
 function normalizeBaseUrl(url) {
