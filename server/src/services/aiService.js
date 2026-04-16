@@ -42,7 +42,7 @@ async function simplifyText(text) {
       max_tokens: 500,
       messages: [{
         role: 'user',
-        content: `You help readers understand difficult text. Rewrite the passage below in simpler, clearer English. Preserve the original meaning. Output only the simplified text—no title, quotes, or explanation.
+        content: `You are helping readers understand difficult text. Rewrite the selected text below in simpler, clearer English that any reader can understand. Preserve the original meaning. Output only the simplified text—no title, quotes, or explanation. Keep the output to a reasonable length, preferably 1, maybe 2 sentences.
 
 Passage:
 ${text}`,
