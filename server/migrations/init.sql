@@ -15,9 +15,13 @@ CREATE TABLE IF NOT EXISTS flashcards (
   user_id INT REFERENCES users(id) ON DELETE CASCADE,
   question TEXT NOT NULL,
   answer TEXT NOT NULL,
+  source_url TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Add source_url to existing flashcards table if not present
+ALTER TABLE flashcards ADD COLUMN IF NOT EXISTS source_url TEXT;
 
 -- Create decks table
 CREATE TABLE IF NOT EXISTS decks (
