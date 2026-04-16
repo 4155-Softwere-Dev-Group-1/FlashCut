@@ -5,10 +5,10 @@ async function generateFlashcard(term, sentence, sourceUrl, userId) {
   const flashcard = await aiService.generateFlashcard(term, sentence);
 
   const result = await pool.query(
-    `INSERT INTO flashcards (user_id, question, answer)
-     VALUES ($1, $2, $3)
+    `INSERT INTO flashcards (user_id, question, answer, source_url)
+     VALUES ($1, $2, $3, $4)
      RETURNING *`,
-    [userId, flashcard.question, flashcard.answer]
+    [userId, flashcard.question, flashcard.answer, sourceUrl || null]
   );
 
   return result.rows[0];

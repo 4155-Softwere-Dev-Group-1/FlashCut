@@ -4,7 +4,7 @@ let allCards = [];
 let filtered = [];
 let currentPage = 1;
 let token = null;
-let apiBase = 'http://localhost:5001';
+let apiBase = 'https://flashcut.onrender.com';
 let pendingDeleteId = null;
 let deleteAll = false;
 
@@ -43,7 +43,7 @@ async function loadCards() {
     allCards = await res.json();
     filterCards();
   } catch(e) {
-    showBanner('error', '⚠ Could not reach server. Make sure the backend is running (default port 5001).');
+    showBanner('error', '⚠ Could not reach server. Make sure the backend is running, or give it time to spin up.');
     document.getElementById('loading-state').style.display = 'none';
   }
 }
@@ -119,6 +119,7 @@ function createCardEl(card) {
     <div class="fc-question" id="q-${card.id}">${esc(card.question)}</div>
     <div class="fc-a-label">A</div>
     <div class="fc-answer" id="a-${card.id}">${esc(card.answer)}</div>
+    ${card.source_url ? `<div class="fc-source"><span class="fc-source-label">Source:</span> <a class="fc-source-link" href="${esc(card.source_url)}" target="_blank" rel="noopener noreferrer">${esc(card.source_url)}</a></div>` : ''}
     ${date ? `<div class="fc-date">${date}</div>` : ''}
   `;
 
@@ -298,11 +299,10 @@ function exportCards(format) {
 
   let content, mime, ext;
   if (format === 'json') {
-    content = JSON.stringify(allCards.map(c => ({ id: c.id, question: c.question, answer: c.answer, created_at: c.created_at })), null, 2);
+    content = JSON.stringify(allCards.map(c => ({ id: c.id, question: c.question, answer: c.answer, source_url: c.source_url || null, created_at: c.created_at })), null, 2);
     mime = 'application/json'; ext = 'json';
   } else if (format === 'csv') {
-    const rows = [['id','question','answer','created_at'],
-      ...allCards.map(c => [c.id, `"${(c.question||'').replace(/"/g,'""')}"`, `"${(c.answer||'').replace(/"/g,'""')}"`, c.created_at])];
+    const rows = allCards.map(c => [`"${(c.question||'').replace(/"/g,'""')}"`, `"${(c.answer||'').replace(/"/g,'""')}"`]);
     content = rows.map(r => r.join(',')).join('\n');
     mime = 'text/csv'; ext = 'csv';
   } else {
