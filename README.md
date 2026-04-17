@@ -75,12 +75,3 @@ Shortcuts can be reassigned at `chrome://extensions/shortcuts`.
 2. Your saved cards appear in the popup.
 3. Click **Options** for the full list, editing, deletion, and export (CSV/JSON).
 
----
-
-## Reloading After Updates
-
-If you pull new code from the repository:
-
-1. Go to `chrome://extensions`.
-2. Click the **Reload** button (circular arrow) on the FlashCut card.
-3. Refresh any browser tabs where you want the updated content script to run.
