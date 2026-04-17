@@ -16,6 +16,7 @@
   ],
 
   "host_permissions": [
+    "https://flashcut.onrender.com/*",
     "http://localhost:5001/*",
     "http://127.0.0.1:5001/*"
   ],
@@ -26,7 +27,7 @@
       "description": "Save selected text as a FlashCut flashcard"
     },
     "simplify-selection": {
-      "suggested_key": { "default": "Alt+D" },
+      "suggested_key": { "default": "Alt+G" },
       "description": "Simplify or paraphrase the selected passage"
     }
   },

@@ -87,7 +87,7 @@ function handleSimplifySelection() {
 
   if (!selectedText || selectedText.split(/\s+/).filter(Boolean).length < 2) {
     console.warn('FlashCut: Select at least two words to simplify.');
-    showFlashcutToast('Select at least two words, then press Alt+D.');
+    showFlashcutToast('Select at least two words, then press Alt+G.');
     return;
   }
 
