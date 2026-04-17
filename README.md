@@ -1,58 +1,92 @@
-# FlashCut
+# FlashCut — Installation Guide
 
-Chrome extension (Manifest V3) + Node/Express API + PostgreSQL. Save vocabulary flashcards from selected text and optionally simplify longer selections with AI.
+## Prerequisites
 
-## Quick start
+- [Google Chrome](https://www.google.com/chrome/) (or any Chromium-based browser)
+- A FlashCut account (register through the extension popup)
 
-1. **Install dependencies**
+---
 
-   ```bash
-   npm install
-   npm install --prefix server
-   ```
+## Installing the Chrome Extension (Unpacked)
 
-2. **Environment** — Copy `.env.example` to `.env` in the repo root (`FlashCut/.env`). The server loads it from there. Set at least `DATABASE_URL`, `JWT_SECRET`, and `ANTHROPIC_API_KEY`. Optional: `SERVER_PORT` (defaults below).
-
-3. **Database** — Run `server/migrations/init.sql` against your Postgres instance.
-
-4. **Run the API** — Default port is **5001** (avoids macOS AirPlay / Control Center on **5000**).
+1. **Download or clone the repository**
 
    ```bash
-   npm run dev --prefix server
+   git clone https://github.com/4155-Softwere-Dev-Group-1/FlashCut.git
    ```
 
-   Check `http://localhost:5001/health`.
+   Or download and extract the ZIP from GitHub.
 
-5. **Load the extension** — In Chrome: `chrome://extensions` → Developer mode → **Load unpacked** → choose the `extension/` folder. Reload the extension after code changes.
+2. **Open Chrome Extensions**
 
-6. **Backend URL** — If you use a non-default host/port, open the extension **Options** and set **Backend URL** (stored in extension storage). Default is `http://localhost:5001`.
+   Navigate to `chrome://extensions` in your address bar.
 
-## Features
+3. **Enable Developer Mode**
+
+   Toggle **Developer mode** on using the switch in the top-right corner of the page.
+
+4. **Load the extension**
+
+   Click **Load unpacked**, then select the `extension/` folder inside the repository.
+
+   Example path: `FlashCut/extension/`
+
+5. **Confirm the extension loaded**
+
+   The FlashCut icon should appear in your Chrome toolbar. If it doesn't, click the puzzle-piece icon in the toolbar and pin FlashCut.
+
+---
+
+## Connecting to the Backend
+
+The extension points to the hosted API at `https://flashcut.onrender.com` by default — no configuration needed for standard use.
+
+If you need to connect to a local or custom server:
+
+1. Click the FlashCut icon → **Options** (or right-click the icon → **Options**).
+2. Under **Backend URL**, enter your server address (e.g. `http://localhost:5001`).
+3. Click **Save**.
+
+---
+
+## Creating an Account
+
+1. Click the FlashCut icon in the toolbar.
+2. Switch to the **Create account** tab.
+3. Enter a username, email, and password, then click **Create account**.
+4. You'll be logged in automatically.
+
+---
+
+## Using FlashCut
 
 | Shortcut | Action |
 |----------|--------|
-| **Alt+S** | Save **1–3 words** as a flashcard (`POST /api/flashcards`). |
-| **Alt+D** | Simplify **2+ words** via `POST /api/simplify` (not saved to the database). |
+| **Alt+S** | Save the selected word or phrase (1–3 words) as a flashcard |
+| **Alt+G** | Simplify the selected passage with AI (2+ words, not saved) |
 
-Shortcuts can be changed under `chrome://extensions/shortcuts`. They do not run on restricted pages (e.g. `chrome://`).
+Shortcuts can be reassigned at `chrome://extensions/shortcuts`.
 
-## API overview
+**Note:** Shortcuts do not work on Chrome system pages (e.g. `chrome://`, `chrome-extension://`).
 
-| Area | Routes |
-|------|--------|
-| Auth | `POST /api/auth/register`, `POST /api/auth/login` |
-| Flashcards | `POST /api/flashcards`, `GET /api/flashcards`, `PUT /api/flashcards/:id`, `DELETE /api/flashcards/:id` |
-| Simplify | `POST /api/simplify` (body: `{ "text": "..." }`, min 2 words) |
+### Saving a flashcard
 
-AI calls use **Anthropic** (`ANTHROPIC_API_KEY` in `.env`).
+1. Highlight 1–3 words on any webpage.
+2. Press **Alt+S**.
+3. A confirmation appears when the card is saved.
 
-## Repository layout
+### Viewing and managing flashcards
 
-- **`extension/`** — Popup, options page, content script, background service worker, `lib/apiConfig.js` for API base URL.
-- **`server/`** — Express app (`src/app.js`), routes, services, migrations.
-- **`Battle_Plan.md`** — Longer roadmap / process notes.
+1. Click the FlashCut icon.
+2. Your saved cards appear in the popup.
+3. Click **Options** for the full list, editing, deletion, and export (CSV/JSON).
 
-## Development notes
+---
 
-- Root `npm run dev` runs the server with `concurrently`; the extension is developed by loading it unpacked in Chrome (no separate build step in the current `extension/package.json` scripts).
-- Tighten `host_permissions` / CORS before a public release.
+## Reloading After Updates
+
+If you pull new code from the repository:
+
+1. Go to `chrome://extensions`.
+2. Click the **Reload** button (circular arrow) on the FlashCut card.
+3. Refresh any browser tabs where you want the updated content script to run.
