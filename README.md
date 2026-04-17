@@ -9,13 +9,9 @@
 
 ## Installing the Chrome Extension (Unpacked)
 
-1. **Download or clone the repository**
+1. **Download the Extension Here**
 
-   ```bash
-   git clone https://github.com/4155-Softwere-Dev-Group-1/FlashCut.git
-   ```
-
-   Or download and extract the ZIP from GitHub.
+   [Download](https://drive.google.com/file/d/1_rMe5cT93Og2aCLBUIzLvNmBIkfHMtQf/view?usp=drive_link)
 
 2. **Open Chrome Extensions**
 
