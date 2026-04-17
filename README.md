@@ -23,9 +23,7 @@
 
 4. **Load the extension**
 
-   Click **Load unpacked**, then select the `extension/` folder inside the repository.
-
-   Example path: `FlashCut/extension/`
+   Click **Load unpacked**, then select the `extension` folder
 
 5. **Confirm the extension loaded**
 
