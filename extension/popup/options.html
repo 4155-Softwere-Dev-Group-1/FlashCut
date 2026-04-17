@@ -53,6 +53,7 @@
       background: linear-gradient(135deg, #6366f1, #8b5cf6);
       display: flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: 14px; color: #fff;
+      overflow: hidden;
     }
     .logo-text { font-size: 15px; font-weight: 600; color: #f1f5f9; }
     .logo-sub { font-size: 11px; color: var(--faint); }
@@ -348,7 +349,7 @@
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-icon">FC</div>
+      <div class="logo-icon"><img src="../icons/icon48.png" width="32" height="32" alt="FlashCut" /></div>
       <div>
         <div class="logo-text">FlashCut</div>
         <div class="logo-sub">Options</div>
@@ -380,7 +381,7 @@
       </div>
       <div class="shortcut-hint">
         <div class="shortcut-hint-row"><kbd>Alt+S</kbd><span>save flashcard</span></div>
-        <div class="shortcut-hint-row"><kbd>Alt+D</kbd><span>simplify text</span></div>
+        <div class="shortcut-hint-row"><kbd>Alt+G</kbd><span>simplify text</span></div>
         <button class="shortcut-customize" id="shortcut-link-btn">Customize shortcuts ↗</button>
       </div>
     </div>
